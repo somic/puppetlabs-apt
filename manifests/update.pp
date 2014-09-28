@@ -10,7 +10,7 @@ class apt::update {
 
     case $apt::apt_update_frequency {
       'always': {
-        $_kick_apt = true
+        $kick_apt = true
       }
       'daily': {
         #compare current date with the apt_update_last_success fact to determine
@@ -18,11 +18,11 @@ class apt::update {
         $daily_threshold = (strftime('%s') - 86400)
         if $::apt_update_last_success {
           if $::apt_update_last_success < $daily_threshold {
-            $_kick_apt = true
+            $kick_apt = true
           }
         } else {
           #if apt-get update has not successfully run, we should kick apt_update
-          $_kick_apt = true
+          $kick_apt = true
         }
       }
       'weekly':{
@@ -31,11 +31,11 @@ class apt::update {
         $weekly_threshold = (strftime('%s') - 604800)
         if $::apt_update_last_success {
           if ( $::apt_update_last_success < $weekly_threshold ) {
-            $_kick_apt = true
+            $kick_apt = true
           }
         } else {
           #if apt-get update has not successfully run, we should kick apt_update
-          $_kick_apt = true
+          $kick_apt = true
         }
       }
       default: {
@@ -44,15 +44,15 @@ class apt::update {
       }
     }
   }
-  if $_kick_apt {
-    $_refresh = false
+  if $kick_apt {
+    $refresh = false
   } else {
-    $_refresh = true
+    $refresh = true
   }
   exec { 'apt_update':
     command     => "${apt::params::provider} update",
     logoutput   => 'on_failure',
-    refreshonly => $_refresh,
+    refreshonly => $refresh,
     timeout     => $apt::update_timeout,
     tries       => $apt::update_tries,
     try_sleep   => 1
