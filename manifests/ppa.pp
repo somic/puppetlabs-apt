@@ -5,7 +5,6 @@ define apt::ppa(
   $release = pick(getvar('::lsbdistcodename'), false),
   $options = false,
 ) {
-  include apt::params
   include apt
   if $options == false {
     $real_options = $apt::params::ppa_options

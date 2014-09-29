@@ -18,7 +18,6 @@ define apt::source(
   $architecture      = undef
 ) {
 
-  include apt::params
   include apt
 
   $sources_list_d = $apt::params::sources_list_d
